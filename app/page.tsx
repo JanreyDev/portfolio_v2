@@ -78,8 +78,10 @@ export default function Home() {
     if (mode === "advanced") {
       setTerminalSessionKey((prev) => prev + 1);
       setTerminalMinimized(false);
+      setActiveFile("page.tsx");
     } else {
       setTerminalMinimized(true);
+      setActiveFile("Home.md");
     }
     setEntryPhase("ready");
     setIsModeChooserOpen(false);
@@ -175,7 +177,7 @@ export default function Home() {
   };
 
   return (
-    <main className="w-full h-[100dvh] flex bg-ide-bg text-ide-text overflow-hidden font-sans relative">
+    <main className="w-full min-h-[100dvh] md:h-[100dvh] flex bg-ide-bg text-ide-text overflow-x-hidden md:overflow-hidden font-sans relative">
       {/* Activity Bar (Icon sidebar) */}
       <div className="hidden md:flex w-12 h-full bg-ide-activity flex-col items-center py-4 gap-6 shrink-0 z-0">
         <div className="p-2 cursor-pointer text-white/90 border-l-2 border-primary"><FileCode size={24} /></div>
@@ -315,7 +317,7 @@ export default function Home() {
       </div>
 
       {/* Editor Area */}
-      <div className="flex-1 h-full flex flex-col bg-ide-bg relative z-10 w-full">
+      <div className="flex-1 h-full flex flex-col bg-ide-bg relative z-10 w-full pb-7 md:pb-0">
         <div className="md:hidden h-10 bg-ide-sidebar border-b border-ide-border/60 flex items-center justify-between px-3 shrink-0">
           <button
             onClick={() => setMobileExplorerOpen(true)}
@@ -361,23 +363,23 @@ export default function Home() {
         </div>
 
         {/* Editor Content Area */}
-        <div className="flex-1 w-full bg-ide-bg relative overflow-hidden">
+        <div className="flex-1 w-full bg-ide-bg relative overflow-visible md:overflow-hidden">
           <AnimatePresence mode="wait">
             {showDocumentView ? (
               <motion.div
-                className="absolute inset-0 z-20"
+                className="relative md:absolute md:inset-0 z-20"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 8 }}
               >
-                <div className="h-full w-full p-6 md:p-12">
+                <div className="h-auto md:h-full w-full p-6 md:p-12">
                   <div className="flex h-full font-mono text-xs md:text-sm">
-                    <div className="flex flex-col text-ide-text/20 text-right pr-6 select-none border-r border-ide-border/30 mr-6 shrink-0">
+                    <div className="hidden md:flex md:flex-col text-ide-text/20 text-right md:pr-6 select-none md:border-r md:border-ide-border/30 md:mr-6 shrink-0">
                       {Array.from({ length: 40 }).map((_, index) => (
                         <span key={index}>{index + 1}</span>
                       ))}
                     </div>
-                    <div className="min-w-0 flex-1 overflow-y-auto text-sm text-foreground">
+                    <div className="min-w-0 flex-1 overflow-y-visible md:overflow-y-auto text-sm text-foreground">
                       {documentContent}
                     </div>
                   </div>
@@ -389,7 +391,7 @@ export default function Home() {
                 <div className="absolute inset-0 p-6 md:p-12 font-mono text-xs md:text-sm text-ide-text/40 whitespace-pre overflow-hidden pointer-events-none select-none">
                   <div className="flex">
                     {/* Line numbers */}
-                    <div className="flex flex-col text-ide-text/20 text-right pr-6 select-none border-r border-ide-border/30 mr-6">
+                    <div className="hidden md:flex md:flex-col text-ide-text/20 text-right md:pr-6 select-none md:border-r md:border-ide-border/30 md:mr-6">
                       {Array.from({ length: 40 }).map((_, i) => (
                         <span key={i}>{i + 1}</span>
                       ))}
@@ -424,7 +426,7 @@ export default function Home() {
                         },
                       }}
                       transition={{ type: "spring", stiffness: 200, damping: 25 }}
-                      className="absolute inset-0 flex items-center justify-center p-4 z-20"
+                      className="relative md:absolute md:inset-0 flex md:items-center justify-center p-4 z-20"
                     >
                       <motion.div className="w-full max-w-5xl shadow-2xl relative" layoutId="terminal-window">
                         <Terminal key={terminalSessionKey} isMinimized={terminalMinimized} onMinimize={handleMinimize} />
@@ -464,8 +466,8 @@ export default function Home() {
         </div>
 
         {/* Status Bar */}
-        <div className="h-6 bg-ide-status w-full shrink-0 flex items-center px-3 text-xs text-white z-20">
-          <div className="flex gap-4">
+        <div className={`${showDocumentView ? "flex" : "hidden"} md:flex h-7 md:h-6 bg-ide-status w-full shrink-0 items-center px-2 md:px-3 text-xs text-white z-30 overflow-x-auto whitespace-nowrap fixed bottom-0 left-0 right-0 md:static`}>
+          <div className="flex items-center gap-2 md:gap-4">
             <button
               onClick={openModeChooser}
               className="cursor-pointer hover:bg-white/20 px-1 rounded transition-colors"
@@ -475,10 +477,10 @@ export default function Home() {
               Mode: {userMode === "advanced" ? "ADVANCED" : userMode === "normal" ? "NORMAL" : "SELECTING"}
             </button>
             <span className="flex items-center gap-1 cursor-pointer hover:bg-white/20 px-1 rounded transition-colors"><GitBranch size={12} /> main*</span>
-            <span className="cursor-pointer hover:bg-white/20 px-1 rounded transition-colors">0 errors, 0 warnings</span>
+            <span className="hidden sm:inline cursor-pointer hover:bg-white/20 px-1 rounded transition-colors">0 errors, 0 warnings</span>
           </div>
           <div className="flex-grow"></div>
-          <div className="flex gap-4">
+          <div className="hidden md:flex gap-4">
             <span className="cursor-pointer hover:bg-white/20 px-1 rounded transition-colors">Ln 27, Col 43</span>
             <span className="cursor-pointer hover:bg-white/20 px-1 rounded transition-colors">Spaces: 4</span>
             <span className="cursor-pointer hover:bg-white/20 px-1 rounded transition-colors">UTF-8</span>

@@ -30,10 +30,18 @@ export function Terminal({ isMinimized: externalMinimized, onMinimize, command: 
     const [isBooting, setIsBooting] = useState(true);
     const [bootLines, setBootLines] = useState<string[]>([]);
     const [internalMinimized, setInternalMinimized] = useState(false);
+    const [mobileFocusCommand, setMobileFocusCommand] = useState<string | null>(null);
     const bottomRef = useRef<HTMLDivElement>(null);
+    const terminalBodyRef = useRef<HTMLDivElement>(null);
+    const skipNextAutoBottomScrollRef = useRef(false);
+    const sectionCommands = new Set(['home', 'about', 'skills', 'services', 'projects', 'contact']);
 
     const handleExecute = (cmd: string) => {
         const trimmedCmd = cmd.trim();
+        if (trimmedCmd) {
+            const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+            setMobileFocusCommand(isMobile && sectionCommands.has(trimmedCmd.toLowerCase()) ? trimmedCmd.toLowerCase() : null);
+        }
         if (trimmedCmd) {
             const output = executeCommand(trimmedCmd, setTheme, theme, handleExecute);
             if (output !== null) {
@@ -136,14 +144,32 @@ export function Terminal({ isMinimized: externalMinimized, onMinimize, command: 
 
     // Scroll to bottom on history change
     useEffect(() => {
+        if (isBooting) {
+            bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
+        if (mobileFocusCommand) {
+            const targetBlocks = terminalBodyRef.current?.querySelectorAll(`[data-section-command="${mobileFocusCommand}"]`);
+            const target = targetBlocks?.[targetBlocks.length - 1] as HTMLElement | undefined;
+            target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            skipNextAutoBottomScrollRef.current = true;
+            setMobileFocusCommand(null);
+            return;
+        }
+
+        if (skipNextAutoBottomScrollRef.current) {
+            skipNextAutoBottomScrollRef.current = false;
+            return;
+        }
+
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [history, bootLines]); // Added bootLines to dependency array for scrolling during boot
+    }, [history, bootLines, isBooting, mobileFocusCommand]);
 
     // Handle external command triggering
     useEffect(() => {
         if (externalCommand && !isBooting) {
             handleExecute(externalCommand);
-            bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
         }
     }, [externalCommand, isBooting]);
 
@@ -193,7 +219,8 @@ export function Terminal({ isMinimized: externalMinimized, onMinimize, command: 
 
             {/* Terminal Content Box */}
             <div
-                className={`flex-1 w-full p-4 md:p-8 overflow-y-auto cursor-text text-foreground ${isMinimized ? 'hidden' : ''}`}
+                ref={terminalBodyRef}
+                className={`no-scrollbar flex-1 w-full p-4 md:p-8 overflow-y-auto cursor-text text-foreground ${isMinimized ? 'hidden' : ''}`}
                 onClick={handleWrapperClick}
             >
                 <div className="w-full mx-auto flex flex-col">
@@ -216,7 +243,7 @@ export function Terminal({ isMinimized: externalMinimized, onMinimize, command: 
                     ) : (
                         <>
                             {/* Welcome Header */}
-                            <pre className="mb-6 text-emerald-500 font-bold overflow-x-auto text-xs md:text-base mt-2 font-mono">
+                            <pre className="no-scrollbar mb-6 text-emerald-500 font-bold overflow-x-auto text-xs md:text-base mt-2 font-mono">
                                 {ASCII_ART}
                             </pre>
                             <div className="mb-8 text-foreground/80">
@@ -231,7 +258,10 @@ export function Terminal({ isMinimized: externalMinimized, onMinimize, command: 
                                             <span className="text-foreground">{item.command}</span>
                                         </div>
                                         {item.output && (
-                                            <div className="mt-2 mb-4 w-full">
+                                            <div
+                                                className="mt-2 mb-4 w-full"
+                                                data-section-command={sectionCommands.has(item.command.toLowerCase()) ? item.command.toLowerCase() : undefined}
+                                            >
                                                 {item.output}
                                             </div>
                                         )}

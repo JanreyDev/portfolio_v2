@@ -51,6 +51,14 @@
     --font-mono: 'Courier New', Courier, monospace;
   }
 
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
   body {
     background: var(--background);
     color: var(--foreground);
@@ -73,4 +81,13 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background: var(--primary);
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }

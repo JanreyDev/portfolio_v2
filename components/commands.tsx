@@ -38,7 +38,6 @@ export const executeCommand = (
             return (
                 <div className="flex flex-col gap-8 py-2 mt-4">
                     <div className="flex flex-col items-start">
-                        <p className="text-xs uppercase tracking-[0.35em] text-cyan-300/80">Home Screen</p>
                         <h2 className="mt-3 text-4xl md:text-5xl font-bold text-emerald-400">Hi! I&apos;m Janrey! 👋</h2>
                         <div className="mt-3 h-1 w-20 rounded-full bg-emerald-500/80"></div>
                     </div>
@@ -126,11 +125,27 @@ export const executeCommand = (
                         {(['frontend', 'backend', 'tools'] as const).map(category => (
                             <div key={category} className="flex flex-col gap-4">
                                 <h3 className="font-bold text-primary text-xl border-b border-white/10 pb-2 capitalize">{category}</h3>
-                                <div className="flex flex-wrap gap-4 pt-2">
+                                <div className="grid grid-cols-2 gap-3 pt-2 md:hidden">
                                     {(portfolioData.skills[category]).map(icon => (
-                                        <div key={icon.name} className="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-colors cursor-default shadow-sm group">
-                                            <img src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${icon.icon}`} className="w-8 h-8 group-hover:scale-110 transition-transform" alt={icon.name} />
-                                            <span className="font-medium">{icon.name}</span>
+                                        <div key={icon.name} className="w-full min-w-0 flex items-center gap-2 px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-colors cursor-default shadow-sm group">
+                                            <img src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${icon.icon}`} className="w-6 h-6 shrink-0 group-hover:scale-110 transition-transform" alt={icon.name} />
+                                            <span className="font-medium text-xs truncate">{icon.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="hidden md:flex md:flex-col md:gap-4 md:pt-2">
+                                    {Array.from(
+                                        { length: Math.ceil(portfolioData.skills[category].length / 6) },
+                                        (_, rowIndex) => portfolioData.skills[category].slice(rowIndex * 6, rowIndex * 6 + 6)
+                                    ).map((row, rowIndex) => (
+                                        <div key={`${category}-row-${rowIndex}`} className="flex flex-wrap gap-4">
+                                            {row.map(icon => (
+                                                <div key={icon.name} className="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-colors cursor-default shadow-sm group">
+                                                    <img src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${icon.icon}`} className="w-8 h-8 group-hover:scale-110 transition-transform" alt={icon.name} />
+                                                    <span className="font-medium">{icon.name}</span>
+                                                </div>
+                                            ))}
                                         </div>
                                     ))}
                                 </div>
@@ -143,7 +158,6 @@ export const executeCommand = (
             return (
                 <div className="flex flex-col gap-6 py-2 mt-4">
                     <div className="flex flex-col mb-4 items-start">
-                        <p className="text-xs uppercase tracking-[0.35em] text-emerald-300/80">What I Offer</p>
                         <h2 className="text-4xl font-bold text-emerald-500 mb-2">My Services</h2>
                         <div className="w-16 h-1 rounded-full bg-emerald-500/80"></div>
                     </div>
@@ -357,20 +371,20 @@ const FilteredProjects = () => {
             </div>
 
             {/* Filter Buttons */}
-            <div className="flex flex-wrap gap-3 mb-2">
+            <div className="mb-2 grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap gap-2.5 md:gap-3">
                 {filters.map(f => (
                     <button
                         key={f}
                         onClick={() => handleFilterChange(f)}
-                        className={`px-4 py-1.5 rounded-full text-sm font-mono transition-all border outline-none ${filter === f
-                            ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)]'
-                            : 'bg-white/5 text-foreground/70 border-white/10 hover:bg-white/10 hover:text-white'
+                        className={`w-full md:w-auto px-3 md:px-4 py-2 md:py-1.5 rounded-lg md:rounded-full text-xs md:text-sm font-mono text-center transition-all border outline-none ${filter === f
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
+                            : 'bg-white/5 text-foreground/75 border-white/10 hover:bg-white/10 hover:text-white'
                             }`}
                     >
                         {f}
                     </button>
                 ))}
-            </div>
+                </div>
 
             {/* Projects Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-2">
