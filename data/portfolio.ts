@@ -57,6 +57,24 @@ export const portfolioData = {
             link: "https://teachify-frontend-web.vercel.app/"
         },
         {
+            title: "Shopepito Online Store",
+            description: "An e-commerce website developed with WordPress that allows businesses to sell products online with a complete shopping system including product management, cart, and checkout functionality powered by WooCommerce.",
+            tags: ["WordPress", "Elementor Pro", "WooCommerce", "PHP"],
+            link: "https://shopepito.is-best.net/?i=1"
+        },
+        {
+            title: "Furniture Store Website",
+            description: "A modern e-commerce furniture store built with WordPress, featuring product catalogs, shopping cart functionality, and a responsive UI. Developed using Elementor Pro with WooCommerce integration for managing products, orders, and payments.",
+            tags: ["WordPress", "Elementor Pro", "WooCommerce", "PHP"],
+            link: "https://furniturestore.ct.ws/?i=1"
+        },
+        {
+            title: "CodeTech Portfolio",
+            description: "A dynamic WordPress developer portfolio built using Elementor Pro and Advanced Custom Fields (ACF), enabling flexible content management and responsive layouts to showcase development projects and services.",
+            tags: ["WordPress", "Elementor Pro", "Advanced Custom Fields (ACF)", "PHP"],
+            link: "https://janreydev.vercel.app/"
+        },
+        {
             title: "E-Commerce Platform",
             description: "A full-stack web application built with Next.js, featuring a robust shopping cart, user authentication, and fully integrated Stripe payments.",
             tags: ["Next.js", "React", "Tailwind", "Stripe"],
