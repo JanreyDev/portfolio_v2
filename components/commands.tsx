@@ -348,6 +348,8 @@ export const executeCommand = (
 const FilteredProjects = () => {
     const [filter, setFilter] = useState('All');
     const [visibleCount, setVisibleCount] = useState(6);
+    const [launchingProject, setLaunchingProject] = useState<string | null>(null);
+    const [launchingLink, setLaunchingLink] = useState<string | null>(null);
     const filters = ['All', 'Next.js', 'Laravel', 'WordPress', 'Flutter'];
 
     const projects = portfolioData.projects;
@@ -361,6 +363,18 @@ const FilteredProjects = () => {
     const handleFilterChange = (f: string) => {
         setFilter(f);
         setVisibleCount(6);
+    };
+
+    const openProject = (title: string, link: string) => {
+        if (!link || link === '#') return;
+        if (launchingProject) return;
+        setLaunchingProject(title);
+        setLaunchingLink(link);
+        window.setTimeout(() => {
+            window.open(link, '_blank', 'noopener,noreferrer');
+            setLaunchingProject(null);
+            setLaunchingLink(null);
+        }, 1000);
     };
 
     return (
@@ -389,7 +403,17 @@ const FilteredProjects = () => {
             {/* Projects Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-2">
                 {displayedProjects.map(project => (
-                    <div key={project.title} className="flex flex-col border border-white/10 rounded-2xl p-6 bg-[#161b22] hover:border-emerald-500/50 transition-all group relative">
+                    <button
+                        key={project.title}
+                        type="button"
+                        onClick={() => openProject(project.title, project.link)}
+                        className={`text-left flex flex-col border rounded-2xl p-6 bg-[#161b22] transition-all group relative overflow-hidden ${launchingProject === project.title
+                            ? 'border-emerald-400 shadow-[0_0_24px_rgba(16,185,129,0.35)] scale-[0.98] cursor-wait'
+                            : 'border-white/10 hover:border-emerald-500/50 hover:-translate-y-1 cursor-pointer'
+                            }`}
+                        aria-label={`Open ${project.title} in new tab`}
+                        disabled={Boolean(launchingProject)}
+                    >
                         {/* macOS Window Controls */}
                         <div className="flex gap-1.5 mb-4 items-center">
                             <div className="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
@@ -398,9 +422,7 @@ const FilteredProjects = () => {
                         </div>
                         <div className="flex justify-between items-start mb-4">
                             <Folder className="w-8 h-8 text-emerald-500" />
-                            <a href={project.link} className="p-2 hover:bg-white/10 rounded-full transition-colors cursor-pointer">
-                                <ExternalLink className="w-5 h-5 text-foreground/50 hover:text-emerald-500 transition-colors" />
-                            </a>
+                            <ExternalLink className={`w-5 h-5 transition-colors ${launchingProject === project.title ? 'text-emerald-300' : 'text-foreground/50 group-hover:text-emerald-500'}`} />
                         </div>
                         <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-emerald-400 transition-colors">{project.title}</h3>
                         <p className="text-foreground/70 text-sm mb-6 flex-grow font-mono leading-relaxed">
@@ -411,9 +433,23 @@ const FilteredProjects = () => {
                                 <span key={tag} className="px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded-md">{tag}</span>
                             ))}
                         </div>
-                    </div>
+                    </button>
                 ))}
             </div>
+
+            {launchingProject && launchingLink && (
+                <div className="fixed inset-0 z-50 bg-[#02060bcc] backdrop-blur-sm flex items-center justify-center">
+                    <div className="w-[320px] rounded-2xl border border-emerald-400/40 bg-[#07131a] p-6 shadow-[0_0_30px_rgba(16,185,129,0.25)] text-center">
+                        <div className="mx-auto mb-4 w-10 h-10 rounded-full border-2 border-emerald-300/35 border-t-emerald-300 animate-spin" />
+                        <p className="text-emerald-200 text-xs font-mono tracking-[0.2em] uppercase">Opening Project</p>
+                        <p className="mt-2 text-foreground font-semibold">{launchingProject}</p>
+                        <p className="mt-1 text-foreground/60 text-xs font-mono">Redirecting in 1 second...</p>
+                        <div className="mt-4 h-1.5 rounded-full bg-emerald-950/60 overflow-hidden">
+                            <div className="h-full w-full bg-emerald-400 animate-pulse" />
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Load More Button */}
             {visibleCount < allFilteredProjects.length && (
