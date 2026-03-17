@@ -54,7 +54,7 @@ export const portfolioData = {
             title: "Teachify AI",
             description: "An AI-powered classroom platform that lets teachers generate quizzes from prompts or documents, assign them to students, and automatically analyze student performance.",
             tags: ["Laravel", "Next.js", "TailwindCSS", "PostgreSQL", "OpenAI API"],
-            link: "https://teachify-frontend-web.vercel.app/"
+            link: "https://teachify-web-ai.vercel.app/"
         },
         {
             title: "Shopepito Online Store",
