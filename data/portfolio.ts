@@ -25,7 +25,8 @@ export const portfolioData = {
             { name: "TypeScript", icon: "typescript/typescript-plain.svg" },
             { name: "HTML5", icon: "html5/html5-plain.svg" },
             { name: "CSS3", icon: "css3/css3-plain.svg" },
-            { name: "Bootstrap", icon: "bootstrap/bootstrap-plain.svg" }
+            { name: "Bootstrap", icon: "bootstrap/bootstrap-plain.svg" },
+            { name: "Vite", icon: "vitejs/vitejs-original.svg" }
         ],
         backend: [
             { name: "Node.js", icon: "nodejs/nodejs-original.svg" },
@@ -46,10 +47,19 @@ export const portfolioData = {
             { name: "Flutter", icon: "flutter/flutter-original.svg" },
             { name: "WordPress", icon: "wordpress/wordpress-plain.svg" },
             { name: "Linux", icon: "linux/linux-plain.svg" },
-            { name: "Figma", icon: "figma/figma-original.svg" }
+            { name: "Figma", icon: "figma/figma-original.svg" },
+            { name: "Railway", icon: "railway/railway-original.svg" }
         ]
     },
     projects: [
+        {
+            title: "ScanForge",
+            subtitle: "Security-Focused SaaS Web Application",
+            description: "A security-focused SaaS-style web application that analyzes websites for vulnerabilities, misconfigurations, and performance issues. It provides automated checks such as SSL validation, API endpoint testing, rate limiting detection, CORS analysis, and information disclosure scanning.",
+            tags: ["Laravel", "Vue", "Vite", "PostgreSQL", "Railway", "Tailwind CSS", "REST API"],
+            link: "https://scanforge-production.up.railway.app/",
+            thumbnail: "/scanforge.png"
+        },
         {
             title: "Teachify AI",
             subtitle: "AI-Powered Classroom Platform",
@@ -90,38 +100,6 @@ export const portfolioData = {
             link: "#",
             thumbnail: "/terminal.png"
         },
-        {
-            title: "Lifestyle Blog",
-            subtitle: "Optimized Publishing Platform",
-            description: "A modern, highly optimized publishing platform featuring custom dynamic themes and SEO tools.",
-            tags: ["WordPress", "PHP", "TailwindCSS"],
-            link: "#",
-            thumbnail: "https://placehold.co/800x450/0d1117/10b981?text=Project+Coming+Soon"
-        },
-        {
-            title: "Fitness Tracker App",
-            subtitle: "Cross-Platform Mobile Workout Tracker",
-            description: "A cross-platform mobile application to track daily workouts, calculate calories, and visualize progress metrics over time.",
-            tags: ["Flutter", "Dart", "Firebase"],
-            link: "#",
-            thumbnail: "https://placehold.co/800x450/0d1117/10b981?text=Fitness+App+Preview"
-        },
-        {
-            title: "Task Management API",
-            subtitle: "Robust Backend for Team Collaboration",
-            description: "A secure, robust backend API for managing user tasks, deadlines, and team collaboration with real-time websocket updates.",
-            tags: ["Node.js", "Express", "PostgreSQL", "Laravel"],
-            link: "#",
-            thumbnail: "https://placehold.co/800x450/0d1117/10b981?text=API+Project+Preview"
-        },
-        {
-            title: "Real Estate Portal",
-            subtitle: "Property Listing & Virtual Tour Platform",
-            description: "A high-performance property listing platform with advanced filtering, map integration, and virtual tours.",
-            tags: ["Next.js", "React", "Mapbox", "Prisma"],
-            link: "#",
-            thumbnail: "https://placehold.co/800x450/0d1117/10b981?text=Real+Estate+Preview"
-        }
     ],
     contact: {
         email: "janreyminadev@gmail.com",
