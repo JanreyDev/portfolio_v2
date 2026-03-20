@@ -48,10 +48,19 @@ export const portfolioData = {
             { name: "WordPress", icon: "wordpress/wordpress-plain.svg" },
             { name: "Linux", icon: "linux/linux-plain.svg" },
             { name: "Figma", icon: "figma/figma-original.svg" },
-            { name: "Railway", icon: "railway/railway-original.svg" }
+            { name: "Railway", icon: "railway/railway-original.svg" },
+            { name: "Dart", icon: "dart/dart-original.svg" }
         ]
     },
     projects: [
+        {
+            title: "SwiftTest",
+            subtitle: "AI-Powered Exam Generator",
+            description: "Built with Flutter, Firebase, and Gemini AI, SwiftTest is a mobile app that automatically generates exams from uploaded documents. Users can create quizzes with multiple question types (MCQ, identification, enumeration, and true/false) and customize item ranges in seconds. The app leverages AI to analyze content and produce accurate questions, helping educators save time and streamline assessment creation.",
+            tags: ["Flutter", "Firebase", "Gemini AI", "Dart"],
+            link: "#",
+            thumbnail: "/Swiftest.png"
+        },
         {
             title: "ScanForge",
             subtitle: "Security-Focused SaaS Web Application",

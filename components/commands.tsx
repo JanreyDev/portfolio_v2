@@ -384,7 +384,7 @@ const FilteredProjects = () => {
     const [filter, setFilter] = useState('All');
     const [visibleCount, setVisibleCount] = useState(6);
     const [selectedProject, setSelectedProject] = useState<any>(null);
-    const filters = ['All', 'Next.js', 'Laravel', 'WordPress', 'Vue'];
+    const filters = ['All', 'Next.js', 'Laravel', 'WordPress', 'Vue', 'Flutter'];
 
     const projects = portfolioData.projects;
 
