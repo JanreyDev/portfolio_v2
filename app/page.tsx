@@ -153,7 +153,15 @@ export default function Home() {
   ];
   const activeDocumentItem = navItems.find((item) => item.name === activeFile);
   const showDocumentView = Boolean(activeDocumentItem);
-  const documentContent = activeDocumentItem ? executeCommand(activeDocumentItem.command) : null;
+  const documentContent = activeDocumentItem ? executeCommand(
+    activeDocumentItem.command,
+    undefined,
+    undefined,
+    (cmd) => {
+      const item = navItems.find((i) => i.command === cmd);
+      if (item) handleSidebarItemClick(item.name);
+    }
+  ) : null;
   const getFileIcon = (name: string) => {
     if (name.endsWith(".md")) return <FileText size={15} className="text-cyan-300" />;
     if (name.endsWith(".tsx")) return <FileCode2 size={15} className="text-amber-300" />;

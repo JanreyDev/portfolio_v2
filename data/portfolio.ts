@@ -52,69 +52,75 @@ export const portfolioData = {
     projects: [
         {
             title: "Teachify AI",
+            subtitle: "AI-Powered Classroom Platform",
             description: "An AI-powered classroom platform that lets teachers generate quizzes from prompts or documents, assign them to students, and automatically analyze student performance.",
             tags: ["Laravel", "Next.js", "TailwindCSS", "PostgreSQL", "OpenAI API"],
-            link: "https://teachify-web-ai.vercel.app/"
+            link: "https://teachify-web-ai.vercel.app/",
+            thumbnail: "/image 62.png"
         },
         {
             title: "Shopepito Online Store",
+            subtitle: "E-Commerce Solution with WooCommerce",
             description: "An e-commerce website developed with WordPress that allows businesses to sell products online with a complete shopping system including product management, cart, and checkout functionality powered by WooCommerce.",
             tags: ["WordPress", "Elementor Pro", "WooCommerce", "PHP"],
-            link: "https://shopepito.is-best.net/?i=1"
+            link: "https://shopepito.is-best.net/?i=1",
+            thumbnail: "/shopepeto.png"
         },
         {
             title: "Furniture Store Website",
+            subtitle: "Modern Furniture E-Commerce",
             description: "A modern e-commerce furniture store built with WordPress, featuring product catalogs, shopping cart functionality, and a responsive UI. Developed using Elementor Pro with WooCommerce integration for managing products, orders, and payments.",
             tags: ["WordPress", "Elementor Pro", "WooCommerce", "PHP"],
-            link: "https://furniturestore.ct.ws/?i=1"
+            link: "https://furniturestore.ct.ws/?i=1",
+            thumbnail: "/furniture.png"
         },
         {
             title: "CodeTech Portfolio",
+            subtitle: "Dynamic Developer Portfolio",
             description: "A dynamic WordPress developer portfolio built using Elementor Pro and Advanced Custom Fields (ACF), enabling flexible content management and responsive layouts to showcase development projects and services.",
             tags: ["WordPress", "Elementor Pro", "Advanced Custom Fields (ACF)", "PHP"],
-            link: "https://janreydev.vercel.app/"
-        },
-        {
-            title: "E-Commerce Platform",
-            description: "A full-stack web application built with Next.js, featuring a robust shopping cart, user authentication, and fully integrated Stripe payments.",
-            tags: ["Next.js", "React", "Tailwind", "Stripe"],
-            link: "#"
+            link: "https://codetech.wuaze.com/?i=1",
+            thumbnail: "/codetech.png"
         },
         {
             title: "Terminal Portfolio",
+            subtitle: "Interactive CLI Style Portfolio",
             description: "An interactive command-line style portfolio featuring macOS inspired window cards, a custom command parser, and comprehensive theme support.",
-            tags: ["TypeScript", "Next.js", "CSS Variables"],
-            link: "#"
-        },
-        {
-            title: "Corporate Directory",
-            description: "An internal employee dashboard and CMS built for managing staff details across multiple company branches.",
-            tags: ["Laravel", "MySQL", "Bootstrap"],
-            link: "#"
+            tags: ["TypeScript", "Next.js", "TailwindCSS", "CSS Variables"],
+            link: "#",
+            thumbnail: "/terminal.png"
         },
         {
             title: "Lifestyle Blog",
+            subtitle: "Optimized Publishing Platform",
             description: "A modern, highly optimized publishing platform featuring custom dynamic themes and SEO tools.",
-            tags: ["WordPress", "PHP", "Tailwind"],
-            link: "#"
+            tags: ["WordPress", "PHP", "TailwindCSS"],
+            link: "#",
+            thumbnail: "https://placehold.co/800x450/0d1117/10b981?text=Project+Coming+Soon"
         },
         {
             title: "Fitness Tracker App",
+            subtitle: "Cross-Platform Mobile Workout Tracker",
             description: "A cross-platform mobile application to track daily workouts, calculate calories, and visualize progress metrics over time.",
             tags: ["Flutter", "Dart", "Firebase"],
-            link: "#"
+            link: "#",
+            thumbnail: "https://placehold.co/800x450/0d1117/10b981?text=Fitness+App+Preview"
         },
         {
             title: "Task Management API",
+            subtitle: "Robust Backend for Team Collaboration",
             description: "A secure, robust backend API for managing user tasks, deadlines, and team collaboration with real-time websocket updates.",
             tags: ["Node.js", "Express", "PostgreSQL", "Laravel"],
-            link: "#"
+            link: "#",
+            thumbnail: "https://placehold.co/800x450/0d1117/10b981?text=API+Project+Preview"
         },
         {
             title: "Real Estate Portal",
+            subtitle: "Property Listing & Virtual Tour Platform",
             description: "A high-performance property listing platform with advanced filtering, map integration, and virtual tours.",
             tags: ["Next.js", "React", "Mapbox", "Prisma"],
-            link: "#"
+            link: "#",
+            thumbnail: "https://placehold.co/800x450/0d1117/10b981?text=Real+Estate+Preview"
         }
     ],
     contact: {
@@ -122,6 +128,7 @@ export const portfolioData = {
         whatsapp: "09619174255",
         linkedin: "janrey-mina-78b9373a7", // Modified to be the ID part for cleaner link management
         linkedinUrl: "https://www.linkedin.com/in/janrey-mina-78b9373a7/",
-        whatsappUrl: "https://wa.me/09619174255"
+        whatsappUrl: "https://wa.me/09619174255",
+        resume: "/janreyMina.pdf"
     }
 };

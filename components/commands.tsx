@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Code, GraduationCap, Briefcase, Award, Folder, ExternalLink, Mail, Linkedin, LucideIcon, Phone, MapPin } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Code, GraduationCap, Briefcase, Award, Folder, ExternalLink, Mail, Linkedin, LucideIcon, Phone, MapPin, X, Globe } from 'lucide-react';
 import { portfolioData } from '@/data/portfolio';
 
 const iconMap: Record<string, LucideIcon> = {
@@ -28,6 +29,7 @@ export const executeCommand = (
                     <div><span className="text-primary font-bold w-20 inline-block">services</span> - What I offer</div>
                     <div><span className="text-primary font-bold w-20 inline-block">projects</span> - Things I&apos;ve built</div>
                     <div><span className="text-primary font-bold w-20 inline-block">contact</span> - Get in touch</div>
+                    <div><span className="text-primary font-bold w-20 inline-block">resume</span> - Download my CV</div>
                     <div><span className="text-primary font-bold w-20 inline-block">theme</span> - Toggle Dark/Light mode</div>
                     <div><span className="text-primary font-bold w-20 inline-block">clear</span> - Clear the terminal</div>
                     <div><span className="text-primary font-bold w-20 inline-block">close</span> - Minimize terminal</div>
@@ -74,9 +76,10 @@ export const executeCommand = (
                             Connect with me
                         </button>
                         <a
-                            href="/resume.pdf"
+                            href={portfolioData.contact.resume}
                             target="_blank"
                             rel="noreferrer"
+                            download="Janrey_Mina_Resume.pdf"
                             className="rounded-lg border border-cyan-400/40 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-200 hover:bg-cyan-500/20 transition-colors"
                         >
                             My resume
@@ -327,6 +330,8 @@ export const executeCommand = (
                     </div>
                 </div>
             );
+        case 'resume':
+            return <ResumeDownload />;
         case 'theme':
             if (setTheme && theme) {
                 const newTheme = theme === 'dark' ? 'light' : 'dark';
@@ -345,11 +350,40 @@ export const executeCommand = (
     }
 };
 
+const ResumeDownload = () => {
+    useEffect(() => {
+        const link = document.createElement('a');
+        link.href = portfolioData.contact.resume;
+        link.download = 'Janrey_Mina_Resume.pdf';
+        link.click();
+    }, []);
+
+    return (
+        <div className="flex flex-col gap-4 py-2">
+            <div className="flex items-center gap-2 text-emerald-400">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                <p className="font-mono">Initiating resume download...</p>
+            </div>
+            <div className="text-sm text-foreground/60 font-mono pl-4">
+                Thank you for your interest! If the download doesn&apos;t start automatically,
+                you can use the button below.
+            </div>
+            <a
+                href={portfolioData.contact.resume}
+                download="Janrey_Mina_Resume.pdf"
+                className="w-fit mt-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-sm font-semibold text-emerald-300 hover:bg-emerald-500/20 transition-all flex items-center gap-2"
+            >
+                <ExternalLink className="w-4 h-4" />
+                Manually Download Resume
+            </a>
+        </div>
+    );
+};
+
 const FilteredProjects = () => {
     const [filter, setFilter] = useState('All');
     const [visibleCount, setVisibleCount] = useState(6);
-    const [launchingProject, setLaunchingProject] = useState<string | null>(null);
-    const [launchingLink, setLaunchingLink] = useState<string | null>(null);
+    const [selectedProject, setSelectedProject] = useState<any>(null);
     const filters = ['All', 'Next.js', 'Laravel', 'WordPress', 'Flutter'];
 
     const projects = portfolioData.projects;
@@ -365,20 +399,32 @@ const FilteredProjects = () => {
         setVisibleCount(6);
     };
 
-    const openProject = (title: string, link: string) => {
-        if (!link || link === '#') return;
-        if (launchingProject) return;
-        setLaunchingProject(title);
-        setLaunchingLink(link);
-        window.setTimeout(() => {
-            window.open(link, '_blank', 'noopener,noreferrer');
-            setLaunchingProject(null);
-            setLaunchingLink(null);
-        }, 1000);
+    const getSkillIcon = (tagName: string) => {
+        const allSkills = [
+            ...portfolioData.skills.frontend,
+            ...portfolioData.skills.backend,
+            ...portfolioData.skills.tools
+        ];
+        // Standardize tag names vs skill names (e.g., TailwindCSS vs Tailwind CSS)
+        const normalizedTag = tagName.toLowerCase().replace(/\s/g, '').replace(/\./g, '');
+        const skill = allSkills.find(s => 
+            s.name.toLowerCase().replace(/\s/g, '').replace(/\./g, '') === normalizedTag
+        );
+        
+        if (skill) {
+            return (
+                <img 
+                    src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${skill.icon}`} 
+                    className="w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity" 
+                    alt={tagName} 
+                />
+            );
+        }
+        return <Code className="w-4 h-4 text-emerald-500/50" />;
     };
 
     return (
-        <div className="flex flex-col gap-6 py-2 mt-4">
+        <div className="flex flex-col gap-6 py-2 mt-4 relative">
             <div className="flex flex-col mb-4 items-start">
                 <h2 className="text-4xl font-bold text-emerald-500 mb-2">My Projects</h2>
                 <div className="w-16 h-1 rounded-full bg-emerald-500/80"></div>
@@ -398,58 +444,172 @@ const FilteredProjects = () => {
                         {f}
                     </button>
                 ))}
-                </div>
+            </div>
 
-            {/* Projects Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-2">
+            {/* Projects Grid - Clean Mockup Style */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full mt-2">
                 {displayedProjects.map(project => (
-                    <button
+                    <div
                         key={project.title}
-                        type="button"
-                        onClick={() => openProject(project.title, project.link)}
-                        className={`text-left flex flex-col border rounded-2xl p-6 bg-[#161b22] transition-all group relative overflow-hidden ${launchingProject === project.title
-                            ? 'border-emerald-400 shadow-[0_0_24px_rgba(16,185,129,0.35)] scale-[0.98] cursor-wait'
-                            : 'border-white/10 hover:border-emerald-500/50 hover:-translate-y-1 cursor-pointer'
-                            }`}
-                        aria-label={`Open ${project.title} in new tab`}
-                        disabled={Boolean(launchingProject)}
+                        onClick={() => setSelectedProject(project)}
+                        className="group relative flex flex-col border border-white/10 rounded-2xl bg-[#161b22] overflow-hidden cursor-pointer hover:border-emerald-500/50 transition-all duration-300"
                     >
-                        {/* macOS Window Controls */}
-                        <div className="flex gap-1.5 mb-4 items-center">
-                            <div className="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
-                            <div className="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
-                            <div className="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+                        {/* macOS Window Header Bar */}
+                        <div className="w-full bg-[#1c2128] border-b border-white/10 px-4 py-3 flex items-center justify-between">
+                            <div className="flex gap-1.5 items-center">
+                                <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]"></div>
+                                <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></div>
+                                <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]"></div>
+                            </div>
+                            <div className="p-1 rounded-md bg-white/5 border border-white/5 text-foreground/20 group-hover:text-emerald-500/30 transition-colors">
+                                <ExternalLink className="w-3 h-3" />
+                            </div>
                         </div>
-                        <div className="flex justify-between items-start mb-4">
-                            <Folder className="w-8 h-8 text-emerald-500" />
-                            <ExternalLink className={`w-5 h-5 transition-colors ${launchingProject === project.title ? 'text-emerald-300' : 'text-foreground/50 group-hover:text-emerald-500'}`} />
+
+                        {/* Thumbnail Container - Solid & Clean with Subtle Vignette */}
+                        <div className="aspect-video w-full overflow-hidden relative bg-[#0a0c10] flex items-center justify-center">
+                            {project.thumbnail ? (
+                                <div className="w-full h-full relative">
+                                    <img
+                                        src={project.thumbnail}
+                                        alt={project.title}
+                                        className="w-full h-full object-top object-cover transition-all duration-500 brightness-[0.85] group-hover:brightness-100 group-hover:scale-105"
+                                    />
+                                    {/* Subtle Inner Highlight & Vignette to anchor bright images */}
+                                    <div className="absolute inset-0 pointer-events-none border border-white/5 rounded-none" />
+                                    <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/20 via-transparent to-black/10 transition-opacity duration-500 opacity-100 group-hover:opacity-40" />
+                                </div>
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center">
+                                    <Folder className="w-12 h-12 text-emerald-500/30" />
+                                </div>
+                            )}
                         </div>
-                        <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-emerald-400 transition-colors">{project.title}</h3>
-                        <p className="text-foreground/70 text-sm mb-6 flex-grow font-mono leading-relaxed">
-                            {project.description}
-                        </p>
-                        <div className="flex flex-wrap gap-2 text-xs font-mono">
-                            {project.tags.map(tag => (
-                                <span key={tag} className="px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded-md">{tag}</span>
-                            ))}
+
+                        {/* Content Area - Clean Typography */}
+                        <div className="p-6 flex flex-col flex-grow bg-gradient-to-b from-transparent to-black/30">
+                            <div className="flex justify-between items-start mb-3">
+                                <h3 className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors tracking-tight">{project.title}</h3>
+                            </div>
+                            <p className="text-foreground/60 text-sm line-clamp-2 leading-relaxed mb-6 font-medium">
+                                {project.description}
+                            </p>
+                            <div className="flex flex-wrap gap-2.5 mt-auto">
+                                {project.tags.slice(0, 3).map((tag: string) => (
+                                    <span key={tag} className="text-[10px] uppercase tracking-wider font-mono px-2.5 py-1 bg-emerald-500/5 text-emerald-400/80 rounded-md border border-emerald-500/10">
+                                        {tag}
+                                    </span>
+                                ))}
+                                {project.tags.length > 3 && (
+                                    <span className="text-[10px] font-mono px-2.5 py-1 bg-white/5 text-foreground/40 rounded-md border border-white/10">
+                                        +{project.tags.length - 3}
+                                    </span>
+                                )}
+                            </div>
                         </div>
-                    </button>
+                    </div>
                 ))}
             </div>
 
-            {launchingProject && launchingLink && (
-                <div className="fixed inset-0 z-50 bg-[#02060bcc] backdrop-blur-sm flex items-center justify-center">
-                    <div className="w-[320px] rounded-2xl border border-emerald-400/40 bg-[#07131a] p-6 shadow-[0_0_30px_rgba(16,185,129,0.25)] text-center">
-                        <div className="mx-auto mb-4 w-10 h-10 rounded-full border-2 border-emerald-300/35 border-t-emerald-300 animate-spin" />
-                        <p className="text-emerald-200 text-xs font-mono tracking-[0.2em] uppercase">Opening Project</p>
-                        <p className="mt-2 text-foreground font-semibold">{launchingProject}</p>
-                        <p className="mt-1 text-foreground/60 text-xs font-mono">Redirecting in 1 second...</p>
-                        <div className="mt-4 h-1.5 rounded-full bg-emerald-950/60 overflow-hidden">
-                            <div className="h-full w-full bg-emerald-400 animate-pulse" />
-                        </div>
+            {/* Project Modal */}
+            <AnimatePresence>
+                {selectedProject && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 overflow-hidden">
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedProject(null)}
+                            className="absolute inset-0 bg-black/90 backdrop-blur-sm"
+                        />
+                        
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 30 }}
+                            transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
+                            className="relative w-full max-w-3xl bg-[#0d1117] border border-white/10 rounded-[2rem] overflow-hidden shadow-2xl z-10"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            {/* Modal Close Control */}
+                            <button 
+                                onClick={() => setSelectedProject(null)}
+                                className="absolute top-6 right-6 z-20 p-2 rounded-full bg-black/40 hover:bg-black/60 border border-white/10 text-white/70 hover:text-white transition-all outline-none"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+
+                            <div className="flex flex-col h-full max-h-[90vh] overflow-y-auto no-scrollbar">
+                                {/* Top: Image/Thumbnail - Clean Header Style with Vignette */}
+                                <div className="w-full aspect-video md:aspect-[21/9] relative overflow-hidden bg-[#0a0c10]">
+                                    {selectedProject.thumbnail ? (
+                                        <div className="w-full h-full relative">
+                                            <img 
+                                                src={selectedProject.thumbnail} 
+                                                alt={selectedProject.title}
+                                                className="w-full h-full object-top object-cover brightness-[0.85]"
+                                            />
+                                            {/* Soft Vignette to prevent harsh white-on-dark contrast */}
+                                            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0d1117] via-[#0d1117]/40 to-transparent" />
+                                            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent h-24" />
+                                        </div>
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-white/5 text-emerald-500/20">
+                                            <Folder className="w-24 h-24" />
+                                        </div>
+                                    )}
+                                    {/* Sublte top shadow to anchor navigation controls */}
+                                    <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/40 to-transparent" />
+                                </div>
+
+                                {/* Content Section */}
+                                <div className="p-8 md:p-12 relative flex flex-col">
+                                    {/* Live Link Arrow Button - Top Right of Content */}
+                                    {selectedProject.link && selectedProject.link !== '#' && (
+                                        <a 
+                                            href={selectedProject.link} 
+                                            target="_blank" 
+                                            rel="noreferrer"
+                                            className="absolute top-8 right-8 md:top-12 md:right-12 p-3 rounded-full border border-white/10 bg-white/5 hover:bg-emerald-500 hover:text-black hover:border-emerald-500 text-foreground/50 transition-all group"
+                                            title="Visit Live Site"
+                                        >
+                                            <ExternalLink className="w-5 h-5 transition-transform group-hover:scale-110" />
+                                        </a>
+                                    )}
+
+                                    {/* Title & Subtitle */}
+                                    <div className="pr-16">
+                                        <h3 className="text-3xl md:text-4xl font-bold text-white tracking-tight">{selectedProject.title}</h3>
+                                        <p className="text-blue-400 font-semibold mt-2 text-lg">{selectedProject.subtitle}</p>
+                                    </div>
+
+                                    {/* Description */}
+                                    <div className="mt-8 mb-10">
+                                        <p className="text-foreground/70 leading-relaxed text-base md:text-lg whitespace-pre-line font-medium">
+                                            {selectedProject.description}
+                                        </p>
+                                    </div>
+
+                                    {/* Tech Stack - With Icons */}
+                                    <div className="mt-auto border-t border-white/10 pt-8">
+                                        <div className="flex flex-wrap gap-4">
+                                            {selectedProject.tags.map((tag: string) => (
+                                                <div 
+                                                    key={tag} 
+                                                    className="flex items-center gap-2.5 px-4 py-2 bg-[#161b22] border border-white/10 rounded-full transition-colors hover:border-emerald-500/30 group"
+                                                >
+                                                    {getSkillIcon(tag)}
+                                                    <span className="text-sm font-mono text-foreground/80 group-hover:text-foreground transition-colors">{tag}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
                     </div>
-                </div>
-            )}
+                )}
+            </AnimatePresence>
 
             {/* Load More Button */}
             {visibleCount < allFilteredProjects.length && (
